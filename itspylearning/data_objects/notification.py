@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from itspylearning.data_objects.member import Member
 
@@ -14,20 +15,22 @@ class Notification:
     isRead:bool
 
 
+    @staticmethod
     def fromFetchedJSON(json: str):
+        data: dict[str,  Any] = eval(json)
         return Notification(
-            id= json['NotificationId'],
-            text= json['Text'],
-            date= json['PublishedDate'],
+            id= data['NotificationId'],
+            text= data['Text'],
+            date= data['PublishedDate'],
             author= Member(
-              id= json['PublishedBy']['PersonId'],
-              firstName= json['PublishedBy']['FirstName'],
-              lastName= json['PublishedBy']['LastName'],
-              profile= json['PublishedBy']['ProfileUrl'],
-              profileImage= json['PublishedBy']['ProfileImageUrl']
+                id= data['PublishedBy']['PersonId'],
+                firstName= data['PublishedBy']['FirstName'],
+                lastName= data['PublishedBy']['LastName'],
+                profile= data['PublishedBy']['ProfileUrl'],
+                profileImage= data['PublishedBy']['ProfileImageUrl']
             ),
-            type= json['Type'],
-            url= json['Url'],
-            content= json['ContentUrl'],
-            isRead= json['IsRead']
+            type= data['Type'],
+            url= data['Url'],
+            content= data['ContentUrl'],
+            isRead= data['IsRead']
           )

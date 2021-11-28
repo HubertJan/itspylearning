@@ -1,7 +1,12 @@
+# Used as a test file
+main.py
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
 
 # C extensions
 *.so

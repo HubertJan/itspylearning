@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from itspylearning.data_objects.content import Content
-
 @dataclass
 class Course:
     id: str
@@ -12,13 +10,15 @@ class Course:
     url:str
     color:str
 
+    @staticmethod
     def fromFetchedJSON(json: str):
+        data: dict[str,  str] = eval(json)
         return Course(
-            id= json['CourseId'],
-            name= json['Title'],
-            updated= json['LastUpdatedUtc'],
-            notificationCount= json['NewNotificationsCount'],
-            newsCount= json['NewBulletinsCount'],
-            url= json['Url'],
-            color= json['CourseColor']
+            id= data['CourseId'],
+            name= data['Title'],
+            updated= data['LastUpdatedUtc'],
+            notificationCount= data['NewNotificationsCount'],
+            newsCount= data['NewBulletinsCount'],
+            url= data['Url'],
+            color= data['CourseColor']
         )

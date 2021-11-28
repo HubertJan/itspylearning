@@ -16,12 +16,11 @@ It can fetch organisations, log into user accounts and fetch information from th
 import asyncio
 
 import itspylearning.itslearning as lib
-from itspylearning.organisation import Organisation
 
 async def setup():
     #Remember to change the login details.
-    organisations = await lib.ItsLearning.searchOrganisations("Organisation Name")
-    org: Organisation = await lib.ItsLearning.fetchOrganisation(organisations[0]["id"])
+    organisations = await lib.searchOrganisations("Organisation Name")
+    org = await lib.fetchOrganisation(organisations[0]["id"])
     user = await org.authenticate("Username", "Password")
 
     #It fetches all the tasks and outputs the name of the first task.
@@ -29,7 +28,7 @@ async def setup():
     print(tasks[0].name)
 
     #All sessions have to be closed.
-    await lib.ItsLearning.closeSession()
+    await lib.closeSession()
     await org.closeSession()
     await user.closeSession()
     print("done")

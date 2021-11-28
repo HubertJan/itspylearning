@@ -1,8 +1,9 @@
-from dataclasses import dataclass
+from typing import Callable, List, Union
 import aiohttp
 import json
 import datetime
 import math
+
 from itspylearning.data_objects.course import Course
 from itspylearning.data_objects.hierarchry_member import HierarchyMember
 from itspylearning.data_objects.hierarchy import Hierarchy
@@ -11,11 +12,8 @@ from itspylearning.data_objects.news import News
 from itspylearning.data_objects.notification import Notification
 from itspylearning.data_objects.task import Task
 
-import itspylearning.organisation as org
-import itspylearning.format_helper as helper
-
-USER_AGENT = 'itslearningintapp/2.2.0 (com.itslearning.itslearningintapp; build:117; iOS 10.2.1) Alamofire/4.2.0'
-
+import itspylearning.consts as _consts
+import itspylearning.organisation as _org
 
 class User:
     def __init__(self,     accessToken: str,
@@ -43,8 +41,8 @@ class User:
         self.ignoreTokenTimeout = False
 
     @staticmethod
-    async def fetchUser(organisation, tokens: dict):
-        client = User._createClient(id)
+    async def fetchUser(organisation: _org.Organisation, tokens: dict):
+        client = User._createClient("")
         accessToken = tokens['access_token']
         response = await client.get(f"/restapi/personal/person/v1/?access_token={accessToken}#")
 
@@ -65,7 +63,7 @@ class User:
         ) + datetime.timedelta(milliseconds=tokens['expires_in']),
             organisation=organisation,)
 
-    async def fetchCourses(self) -> list[Course]:
+    async def fetchCourses(self) -> List[Course]:
         data = await self._fetch("/restapi/personal/courses/v1/")
         courses = []
 
@@ -82,24 +80,22 @@ class User:
 
         return courses
 
-    async def fetchTasks(self) -> list[Task]:
+    async def fetchTasks(self) -> List[Task]:
         data = await self._fetch("/restapi/personal/tasks/v1/")
         tasks: list[Task] = []
 
         for taskData in data["EntityArray"]:
-            tasks.append(Task.fromFetchedJSON(taskData)),
-
+            tasks.append(Task.fromFetchedJSON(taskData))
         return tasks
 
-    async def fetchNotifications(self) -> list[Notification]:
+    async def fetchNotifications(self) -> List[Notification]:
         data = await self._fetch("/restapi/personal/notifications/v1/", queryParameters={"PageIndex":0, "PageSize":20})
-        notifications = []
+        notifications: List[Notification] = []
         for notification in data["EntityArray"]:
-            self.notifications.append(Notification.fromFetchedJSON(notification))
-
+            notifications.append(Notification.fromFetchedJSON(notification))
         return notifications
 
-    async def fetchNews(self) -> list[News]:
+    async def fetchNews(self) -> List[News]:
         data = await self._fetch("/restapi/personal/notifications/stream/v1/", queryParameters={"PageIndex":0, "PageSize":20})
         news = []
         for newsData in data["EntityArray"]:
@@ -107,27 +103,26 @@ class User:
 
         return news
     
-    async def fetchAllHierarchyMembersOfHierarchy(self, hierarchyId: int):
-        
+    async def fetchAllHierarchyMembersOfHierarchy(self, hierarchyId: int ):
         pages = math.ceil(await self.fetchMemberCountOfHierarchy(hierarchyId) / 100)
-        members = []
+        members: List[Member] = []
 
         for i in range(pages):
            members = members + await self.fetchHierarchyMembersOfHierarchy(hierarchyId, i)
 
         return members
 
-    async def fetchHierarchy(self):
+    async def fetchHierarchy(self) -> Hierarchy:
         data = await self._fetch(f"/restapi/personal/hierarchies/default/v1/")
 
         return Hierarchy.fromFetchedJSON(data)
     
-    async def fetchMemberCountOfHierarchy(self, hierarchyId: int):
+    async def fetchMemberCountOfHierarchy(self, hierarchyId: int) -> int:
         data = await self._fetch(f"/restapi/personal/hierarchies/{hierarchyId}/members/v1/", queryParameters={"PageIndex":100, "PageSize":0})
 
         return data["Total"]
 
-    async def fetchHierarchyMembersOfHierarchy(self, hierarchyId: int, pageIndex: int):
+    async def fetchHierarchyMembersOfHierarchy(self, hierarchyId: int, pageIndex: int) -> List[Member]:
         data = await self._fetch(f"/restapi/personal/hierarchies/{hierarchyId}/members/v1/", queryParameters={"PageIndex":pageIndex})
 
         member = []
@@ -135,42 +130,38 @@ class User:
             member.append(HierarchyMember.fromFetchedJSON(memberData))
         
         return member
-    
-    async def fetchCourseMemberList(self, hierarchyId: int):
-        allHierarchyMembers = await self.fetchAllHierarchyMembersOfHierarchy(hierarchyId) 
-        allHierarchyMembers : list(HierarchyMember)
 
-        courseMembers = {}
-        for hierarchyMember in allHierarchyMembers:
-            sharedCourseNames = await self.fetchSharedCourseNames(hierarchyMember.member.id)
+    async def sortMembersBySharedCourses(self, members: List[Union[Member, HierarchyMember] ], shouldBeAddToList: Callable[[Union[Member, HierarchyMember]], bool] = lambda _ : True) -> dict[str, List[Member]]:
+        courseMembers: dict[str, Member] = {}
+
+        for member in members:
+            if isinstance(member, HierarchyMember):
+                memberData = member.member
+            else:
+                memberData = member
+            sharedCourseNames = await self.fetchSharedCourseNames(memberData.id)
             if sharedCourseNames == None:
-                continue
+              continue
             for course in sharedCourseNames:
-                if(not courseMembers.keys().__contains__(course)):
-                    courseMembers[course] = []
-                courseMembers[course].append(hierarchyMember.member)   
-        
+                if isinstance(course, Course):
+                    courseName = course.name
+                else:
+                    courseName = course
+                if not courseMembers.keys().__contains__(courseName):
+                    courseMembers[courseName] = []
+                if shouldBeAddToList(member):
+                    courseMembers[courseName].append(memberData)
         return courseMembers
+        
     
-    async def fetchCourseStudentList(self, hierarchyId: int):
-        allHierarchyMembers = await self.fetchAllHierarchyMembersOfHierarchy(hierarchyId) 
-        allHierarchyMembers : list(HierarchyMember)
-
-        courseMembers = {}
-        for hierarchyMember in allHierarchyMembers:
-            sharedCourseNames = await self.fetchSharedCourseNames(hierarchyMember.member.id)
-            if sharedCourseNames == None:
-                continue
-            for course in sharedCourseNames:
-                if(not courseMembers.keys().__contains__(course)):
-                    courseMembers[course] = []
-                if(hierarchyMember.hierarchyRole == "Schüler"):
-                    courseMembers[course].append(hierarchyMember.member)   
-        
-        for courseName in courseMembers:
-            courseMembers[courseName].append(self.member)
-
-        return courseMembers
+    # This is a workaround, if you have only access to a list of all members in your hierarchy
+    # and you want to get a course member list
+    async def fetchCourseMemberListThroughHierarchyList(self, hierarchyId: int | None = None, shouldBeAddToList: Callable[[Union[Member, HierarchyMember]], bool] = lambda _ : True):
+        if(hierarchyId is None):
+            hierarchyId = (await self.fetchHierarchy()).id
+        members = await self.fetchAllHierarchyMembersOfHierarchy(hierarchyId)
+        courseMemberList = await self.sortMembersBySharedCourses(members, shouldBeAddToList)
+        return courseMemberList
     
     async def fetchSharedCourseNames(self, personId):
         data = await self._fetch(f"/restapi/personal/person/relations/{personId}/v1")
@@ -200,12 +191,12 @@ class User:
 
     @property
     def isAuthenticated(self) -> bool:
-        return  self.ignoreTokenTimeout or self.accessToken and datetime.datetime.now() <= self.tokenTimeout
+        return  self.ignoreTokenTimeout or self.accessToken != None and datetime.datetime.now() <= self.tokenTimeout
 
     @staticmethod
     def _createClient(id: str) -> aiohttp.ClientSession:
-        return aiohttp.ClientSession(base_url="https://www.itslearning.com",  headers={
-            "User-Agent": USER_AGENT}, cookies={"login": f"CustomerId={id}", },)
+        return aiohttp.ClientSession(base_url=_consts.ITSLEARNING_URL,  headers={
+            "User-Agent": _consts.USER_AGENT}, cookies={"login": f"CustomerId={id}", },)
 
     @property
     def client(self):

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass
-
 class Member:
     id: str
     firstName: str
@@ -9,13 +8,15 @@ class Member:
     profile: str
     profileImage: str
     profileImageSmall: str
-
+    
+    @staticmethod
     def fromFetchedJSON(json: str):
+        data: dict[str,  str] = eval(json)
         return Member(
-            id=json['PersonId'],
-            firstName=json['FirstName'],
-            lastName=json['LastName'],
-            profile=json['ProfileUrl'],
-            profileImage=json['ProfileImageUrl'],
-            profileImageSmall=json['ProfileImageUrlSmall']
+            id=data['PersonId'],
+            firstName=data['FirstName'],
+            lastName=data['LastName'],
+            profile=data['ProfileUrl'],
+            profileImage=data['ProfileImageUrl'],
+            profileImageSmall=data['ProfileImageUrlSmall']
         )

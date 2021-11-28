@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from itspylearning.data_objects.content import Content
 
@@ -11,12 +12,14 @@ class Hierarchy:
     organisationType: str
     organisationHierarchyId: int
 
+    @staticmethod
     def fromFetchedJSON(json: str):
+        data: dict[str,  Any] = eval(json)
         return Hierarchy(
-            id= json['HierarchyId'],
-            parentId= json['ParentHierarchyId'],
-            name= json['Title'],
-            path= json['Path'],
-            organisationType= json['OrganizationType'],
-            organisationHierarchyId= json['OrganizationHierarchyId'],
+            id= data['HierarchyId'],
+            parentId= data['ParentHierarchyId'],
+            name= data['Title'],
+            path= data['Path'],
+            organisationType= data['OrganizationType'],
+            organisationHierarchyId= data['OrganizationHierarchyId'],
         )

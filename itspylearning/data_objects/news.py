@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 from itspylearning.data_objects.content import Content
@@ -16,24 +17,27 @@ class News:
     url: str
     content: Content
 
+    
+    @staticmethod
     def fromFetchedJSON(json: str):
+        data: dict[str, Any] = eval(json)
         return News(
-            id=json['NotificationId'],
-            location=json['LocationTitle'],
-            text=json['Text'],
-            date=json['PublishedDate'],
+            id=data['NotificationId'],
+            location=data['LocationTitle'],
+            text=data['Text'],
+            date=data['PublishedDate'],
             author=Member(
-                id=json['PublishedBy']['PersonId'],
-                firstName=json['PublishedBy']['FirstName'],
-                lastName=json['PublishedBy']['LastName'],
-                profile=json['PublishedBy']['ProfileUrl'],
-                profileImage=json['PublishedBy']['ProfileImageUrl']
+                id=data['PublishedBy']['PersonId'],
+                firstName=data['PublishedBy']['FirstName'],
+                lastName=data['PublishedBy']['LastName'],
+                profile=data['PublishedBy']['ProfileUrl'],
+                profileImage=data['PublishedBy']['ProfileImageUrl']
             ),
-            type=json['ElementType'],
-            url=json['Url'],
+            type=data['ElementType'],
+            url=data['Url'],
             content=Content(
                 id=None,
                 text=None,
-                url=json['ContentUrl']
+                url=data['ContentUrl']
             )
         )

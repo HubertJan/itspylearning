@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 @dataclass
 class Task:
     id: int
@@ -15,15 +14,17 @@ class Task:
     elementId: int
     type: str
 
+    @staticmethod
     def fromFetchedJSON(json: str):
-        return Task(id=json['TaskId'],
-                    name=json['Title'],
-                    description=json['Description'],
-                    courseName=json['LocationTitle'],
-                    status=json['Status'],
-                    deadline=json['Deadline'],
-                    url=json['Url'],
-                    content=json['ContentUrl'],
-                    icon=json['IconUrl'],
-                    elementId=json['ElementId'],
-                    type=json['ElementType'],)
+        data: dict[str,  str] = eval(json)
+        return Task(id=int(data['TaskId']),
+                    name=data['Title'],
+                    description=data['Description'],
+                    courseName=data['LocationTitle'],
+                    status=data['Status'],
+                    deadline=data['Deadline'],
+                    url=data['Url'],
+                    content=data['ContentUrl'],
+                    icon=data['IconUrl'],
+                    elementId=int(data['ElementId']),
+                    type=data['ElementType'],)
