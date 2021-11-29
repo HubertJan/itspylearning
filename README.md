@@ -28,7 +28,7 @@ async def setup():
     print(tasks[0].name)
 
     #All sessions have to be closed.
-    await lib.Itslearning.closeSession()
+    await Itslearning.closeSession()
     await org.closeSession()
     await user.closeSession()
     print("done")
