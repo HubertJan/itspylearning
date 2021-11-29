@@ -5,8 +5,8 @@ class Course:
     id: str
     name: str
     updated: str
-    notificationCount: str
-    newsCount: str
+    notification_count: str
+    news_count: str
     url:str
     color:str
 
@@ -17,8 +17,8 @@ class Course:
             id= data['CourseId'],
             name= data['Title'],
             updated= data['LastUpdatedUtc'],
-            notificationCount= data['NewNotificationsCount'],
-            newsCount= data['NewBulletinsCount'],
+            notification_count= data['NewNotificationsCount'],
+            news_count= data['NewBulletinsCount'],
             url= data['Url'],
             color= data['CourseColor']
         )

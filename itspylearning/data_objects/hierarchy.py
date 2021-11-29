@@ -6,20 +6,20 @@ from itspylearning.data_objects.content import Content
 @dataclass
 class Hierarchy:
     id: int
-    parentId: int
+    parent_id: int
     name: str
     path: str
-    organisationType: str
-    organisationHierarchyId: int
+    organisation_type: str
+    organisation_hierarchy_id: int
 
     @staticmethod
     def fromFetchedJSON(json: str):
         data: dict[str,  Any] = eval(json)
         return Hierarchy(
             id= data['HierarchyId'],
-            parentId= data['ParentHierarchyId'],
+            parent_id= data['ParentHierarchyId'],
             name= data['Title'],
             path= data['Path'],
-            organisationType= data['OrganizationType'],
-            organisationHierarchyId= data['OrganizationHierarchyId'],
+            organisation_type= data['OrganizationType'],
+            organisation_hierarchy_id= data['OrganizationHierarchyId'],
         )

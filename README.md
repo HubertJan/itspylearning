@@ -13,26 +13,21 @@ It can fetch organisations, log into user accounts and fetch information from th
 ### Example
 
 ```Python
+from itspylearning import *
 import asyncio
 
-from itspylearning import *
+async def loginIntoItsLearning() -> UserService:
+    orgs_data = await Itslearning.search_organisations("Organisation Name")
+    org = await Itslearning.fetch_organisation(orgs_data[0]["id"])
+    return await org.login("Username", "Password")
+
 
 async def setup():
-    #Remember to change the login details.
-    organisations = await Itslearning.searchOrganisations("Organisation Name")
-    org = await Itslearning.fetchOrganisation(organisations[0]["id"])
-    user = await org.authenticate("Username", "Password")
+    userService = await loginIntoItsLearning()
+    newsList = await userService.fetch_news()
 
-    #It fetches all the tasks and outputs the name of the first task.
-    tasks = await user.fetchTasks()
-    print(tasks[0].name)
+    print(newsList[0])
 
-    #All sessions have to be closed.
-    await Itslearning.closeSession()
-    await org.closeSession()
-    await user.closeSession()
-    print("done")
-    
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 loop.run_until_complete(setup())
