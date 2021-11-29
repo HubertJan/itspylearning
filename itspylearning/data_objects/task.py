@@ -6,13 +6,13 @@ class Task:
     id: int
     name: str
     description: str
-    courseName: str
+    course_name: str
     status: str
     deadline: str
     url: str
     content: str
     icon: str
-    elementId: int
+    element_id: int
     type: str
 
     @staticmethod
@@ -20,11 +20,11 @@ class Task:
         return Task(id=int(json['TaskId']),
                     name=json['Title'],
                     description=json['Description'],
-                    courseName=json['LocationTitle'],
+                    course_name=json['LocationTitle'],
                     status=json['Status'],
                     deadline=json['Deadline'],
                     url=json['Url'],
                     content=json['ContentUrl'],
                     icon=json['IconUrl'],
-                    elementId=int(json['ElementId']),
+                    element_id=int(json['ElementId']),
                     type=json['ElementType'],)
