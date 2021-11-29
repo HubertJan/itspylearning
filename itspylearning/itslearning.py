@@ -3,15 +3,15 @@ import json
 
 from aiohttp.client import ClientSession
 
-import itspylearning.consts as _consts
-import itspylearning.organisation as _org
+from itspylearning.consts import ITSLEARNING_URL
+from itspylearning.organisation import Organisation
 
 _clientSession: ClientSession| None = None
 
 def _getClient() -> aiohttp.ClientSession:
     global _clientSession
     if(_clientSession is None):
-        _clientSession = aiohttp.ClientSession(base_url=_consts.ITSLEARNING_URL)
+        _clientSession = aiohttp.ClientSession(base_url=ITSLEARNING_URL)
     return  _clientSession
 
 async def searchOrganisations(query) -> list[dict]:
@@ -23,7 +23,7 @@ async def searchOrganisations(query) -> list[dict]:
         matches.append({"id": match["CustomerId"], "name": match["SiteName"],})
     return matches
 
-async def fetchOrganisation( id) -> _org.Organisation:
+async def fetchOrganisation( id) -> Organisation:
     response = await _getClient().get(f"/restapi/sites/{id}/v1")
     if response.status != 200:
         raise Exception('Request failure.')
@@ -31,7 +31,7 @@ async def fetchOrganisation( id) -> _org.Organisation:
     data = json.loads(rawData)
     if data == None:
         raise Exception("Organisation did not exist.")
-    organisation = _org.Organisation(data)
+    organisation = Organisation(data)
     return organisation
 
 

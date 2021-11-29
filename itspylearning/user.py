@@ -1,4 +1,5 @@
-from typing import Callable, List, Union
+from typing import Callable, List, Union, TYPE_CHECKING
+
 import aiohttp
 import json
 import datetime
@@ -12,8 +13,10 @@ from itspylearning.data_objects.news import News
 from itspylearning.data_objects.notification import Notification
 from itspylearning.data_objects.task import Task
 
-import itspylearning.consts as _consts
-import itspylearning.organisation as _org
+from itspylearning.consts import USER_AGENT, ITSLEARNING_URL
+
+if TYPE_CHECKING:
+    from .organisation import Organisation
 
 class User:
     def __init__(self,     accessToken: str,
@@ -41,7 +44,7 @@ class User:
         self.ignoreTokenTimeout = False
 
     @staticmethod
-    async def fetchUser(organisation: _org.Organisation, tokens: dict):
+    async def fetchUser(organisation: "Organisation", tokens: dict):
         client = User._createClient("")
         accessToken = tokens['access_token']
         response = await client.get(f"/restapi/personal/person/v1/?access_token={accessToken}#")
@@ -132,7 +135,7 @@ class User:
         return member
 
     async def sortMembersBySharedCourses(self, members: List[Union[Member, HierarchyMember] ], shouldBeAddToList: Callable[[Union[Member, HierarchyMember]], bool] = lambda _ : True) -> dict[str, List[Member]]:
-        courseMembers: dict[str, Member] = {}
+        courseMembers: dict[str, List[Member]] = {}
 
         for member in members:
             if isinstance(member, HierarchyMember):
@@ -195,8 +198,8 @@ class User:
 
     @staticmethod
     def _createClient(id: str) -> aiohttp.ClientSession:
-        return aiohttp.ClientSession(base_url=_consts.ITSLEARNING_URL,  headers={
-            "User-Agent": _consts.USER_AGENT}, cookies={"login": f"CustomerId={id}", },)
+        return aiohttp.ClientSession(base_url=ITSLEARNING_URL,  headers={
+            "User-Agent": USER_AGENT}, cookies={"login": f"CustomerId={id}", },)
 
     @property
     def client(self):

@@ -1,10 +1,10 @@
 import aiohttp
 import json
 
-import itspylearning.user as user
+from itspylearning.user import User
 from typing import Final
 
-import itspylearning.consts as _consts
+from itspylearning.consts import USER_AGENT, CLIENT_ID
 
 class Organisation:
     def __init__(self, data):
@@ -15,17 +15,17 @@ class Organisation:
         self._client = None
 
     async def authenticate(self, username, password):
-        response = await self.client.post(f"/restapi/oauth2/token", data={"grant_type": "password","client_id": _consts.CLIENT_ID, "password": password, "username": username})
+        response = await self.client.post(f"/restapi/oauth2/token", data={"grant_type": "password","client_id": CLIENT_ID, "password": password, "username": username})
         if response.status != 200:
             raise Exception('Request failure.')
         rawData = await response.text()
         data = json.loads(rawData)
-        return await user.User.fetchUser(self, data)
+        return await User.fetchUser(self, data)
 
     @property
     def client(self):
         if(self._client == None):
-            self._client =  aiohttp.ClientSession(base_url=self.url, headers= {"User-Agent": _consts.USER_AGENT,"Content-Type": "application/x-www-form-urlencoded"},cookies={"login": f"CustomerId={self.id}"})
+            self._client =  aiohttp.ClientSession(base_url=self.url, headers= {"User-Agent": USER_AGENT,"Content-Type": "application/x-www-form-urlencoded"},cookies={"login": f"CustomerId={self.id}"})
         return self._client
     
     async def closeSession(self):
