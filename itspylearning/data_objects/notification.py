@@ -25,7 +25,7 @@ class Notification:
                 id= json['PublishedBy']['PersonId'],
                 first_name= json['PublishedBy']['FirstName'],
                 last_name= json['PublishedBy']['LastName'],
-                profile= json['PublishedBy']['ProfileUrl'],
+                profile_url= json['PublishedBy']['ProfileUrl'],
                 profile_image= json['PublishedBy']['ProfileImageUrl'],
                 profile_image_small= json['PublishedBy']['ProfileImageUrlSmall'] 
             ),
