@@ -1,22 +1,22 @@
 from dataclasses import dataclass
+from typing import Any
 
 @dataclass
 class Member:
     id: str
-    first_name: str
-    last_name: str
-    profile_url: str
-    profile_image: str
-    profile_image_small: str
+    firstName: str
+    lastName: str
+    profile: str
+    profileImage: str
+    profileImageSmall: str
     
     @staticmethod
-    def fromFetchedJSON(json: str):
-        data: dict[str,  str] = eval(json)
+    def fromFetchedJSON(json: Any):
         return Member(
-            id=data['PersonId'],
-            first_name=data['FirstName'],
-            last_name=data['LastName'],
-            profile_url=data['ProfileUrl'],
-            profile_image=data['ProfileImageUrl'],
-            profile_image_small=data['ProfileImageUrlSmall']
+            id=json['PersonId'],
+            firstName=json['FirstName'],
+            lastName=json['LastName'],
+            profile=json['ProfileUrl'],
+            profileImage=json['ProfileImageUrl'],
+            profileImageSmall=json['ProfileImageUrlSmall']
         )

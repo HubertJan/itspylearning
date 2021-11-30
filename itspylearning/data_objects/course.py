@@ -1,24 +1,24 @@
 from dataclasses import dataclass
+from typing import Any
 
 @dataclass
 class Course:
     id: str
     name: str
     updated: str
-    notification_count: str
-    news_count: str
+    notificationCount: str
+    newsCount: str
     url:str
     color:str
 
     @staticmethod
-    def fromFetchedJSON(json: str):
-        data: dict[str,  str] = eval(json)
+    def fromFetchedJSON(json: Any):
         return Course(
-            id= data['CourseId'],
-            name= data['Title'],
-            updated= data['LastUpdatedUtc'],
-            notification_count= data['NewNotificationsCount'],
-            news_count= data['NewBulletinsCount'],
-            url= data['Url'],
-            color= data['CourseColor']
+            id= json['CourseId'],
+            name= json['Title'],
+            updated= json['LastUpdatedUtc'],
+            notificationCount= json['NewNotificationsCount'],
+            newsCount= json['NewBulletinsCount'],
+            url= json['Url'],
+            color= json['CourseColor']
         )

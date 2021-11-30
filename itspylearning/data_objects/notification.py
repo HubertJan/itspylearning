@@ -16,22 +16,21 @@ class Notification:
 
 
     @staticmethod
-    def fromFetchedJSON(json: str):
-        data: dict[str,  Any] = eval(json)
+    def fromFetchedJSON(json: Any):
         return Notification(
-            id= data['NotificationId'],
-            text= data['Text'],
-            date= data['PublishedDate'],
+            id= json['NotificationId'],
+            text= json['Text'],
+            date= json['PublishedDate'],
             author= Member(
-                id= data['PublishedBy']['PersonId'],
-                first_name= data['PublishedBy']['FirstName'],
-                last_name= data['PublishedBy']['LastName'],
-                profile_url= data['PublishedBy']['ProfileUrl'],
-                profile_image= data['PublishedBy']['ProfileImageUrl'],
-                profile_image_small= data['PublishedBy']['ProfileImageUrlSmall'] 
+                id= json['PublishedBy']['PersonId'],
+                firstName= json['PublishedBy']['FirstName'],
+                lastName= json['PublishedBy']['LastName'],
+                profile= json['PublishedBy']['ProfileUrl'],
+                profileImage= json['PublishedBy']['ProfileImageUrl'],
+                profileImageSmall= json['PublishedBy']['ProfileImageUrlSmall'] 
             ),
-            type= data['Type'],
-            url= data['Url'],
-            content= data['ContentUrl'],
-            isRead= data['IsRead']
+            type= json['Type'],
+            url= json['Url'],
+            content= json['ContentUrl'],
+            isRead= json['IsRead']
           )
