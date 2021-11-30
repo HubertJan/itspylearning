@@ -15,27 +15,10 @@ class Hierarchy:
     @staticmethod
     def fromFetchedJSON(json: Any):
         return Hierarchy(
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-            id= data['HierarchyId'],
-            parent_id= data['ParentHierarchyId'],
-            name= data['Title'],
-            path= data['Path'],
-            organisation_type= data['OrganizationType'],
-            organisation_hierarchy_id= data['OrganizationHierarchyId'],
-=======
->>>>>>> build
             id= json['HierarchyId'],
-            parentId= json['ParentHierarchyId'],
+            parent_id= json['ParentHierarchyId'],
             name= json['Title'],
             path= json['Path'],
-<<<<<<< HEAD
-            organisationType= json['OrganizationType'],
-            organisationHierarchyId= json['OrganizationHierarchyId'],
-=======
             organisation_type= json['OrganizationType'],
             organisation_hierarchy_id= json['OrganizationHierarchyId'],
->>>>>>> Stashed changes
->>>>>>> build
         )
