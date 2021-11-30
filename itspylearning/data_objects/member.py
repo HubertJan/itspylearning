@@ -4,19 +4,19 @@ from typing import Any
 @dataclass
 class Member:
     id: str
-    firstName: str
-    lastName: str
-    profile: str
-    profileImage: str
-    profileImageSmall: str
+    first_name: str
+    last_name: str
+    profile_url: str
+    profile_image: str
+    profile_image_small: str
     
     @staticmethod
     def fromFetchedJSON(json: Any):
         return Member(
             id=json['PersonId'],
-            firstName=json['FirstName'],
-            lastName=json['LastName'],
-            profile=json['ProfileUrl'],
-            profileImage=json['ProfileImageUrl'],
-            profileImageSmall=json['ProfileImageUrlSmall']
+            first_name=json['FirstName'],
+            last_name=json['LastName'],
+            profile_url=json['ProfileUrl'],
+            profile_image=json['ProfileImageUrl'],
+            profile_image_small=json['ProfileImageUrlSmall']
         )

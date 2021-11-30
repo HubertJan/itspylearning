@@ -74,8 +74,8 @@ class User:
             courses.append(Course(id=course['CourseId'],
                                        name=course['Title'],
                                        updated=course['LastUpdatedUtc'],
-                                       notificationCount=course['NewNotificationsCount'],
-                                       newsCount=course['NewBulletinsCount'],
+                                       notification_count=course['NewNotificationsCount'],
+                                       news_count=course['NewBulletinsCount'],
                                        url=course['Url'],
                                        color=course['CourseColor'],
                                        ),
@@ -190,7 +190,7 @@ class User:
     
     @property
     def member(self):
-        return Member(id= self.id, firstName=self.firstName, lastName=self.lastName, profile="", profileImageSmall= "", profileImage=self.profileImage,)
+        return Member(id= self.id, first_name=self.firstName, last_name=self.lastName, profile="", profile_image_small= "", profile_image=self.profileImage,)
 
     @property
     def isAuthenticated(self) -> bool:

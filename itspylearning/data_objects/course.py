@@ -6,8 +6,8 @@ class Course:
     id: str
     name: str
     updated: str
-    notificationCount: str
-    newsCount: str
+    notification_count: str
+    news_count: str
     url:str
     color:str
 
@@ -17,8 +17,8 @@ class Course:
             id= json['CourseId'],
             name= json['Title'],
             updated= json['LastUpdatedUtc'],
-            notificationCount= json['NewNotificationsCount'],
-            newsCount= json['NewBulletinsCount'],
+            notification_count= json['NewNotificationsCount'],
+            news_count= json['NewBulletinsCount'],
             url= json['Url'],
             color= json['CourseColor']
         )

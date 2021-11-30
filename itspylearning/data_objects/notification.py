@@ -12,7 +12,7 @@ class Notification:
     type:str
     url:str
     content:str
-    isRead:bool
+    is_read:bool
 
 
     @staticmethod
@@ -23,14 +23,14 @@ class Notification:
             date= json['PublishedDate'],
             author= Member(
                 id= json['PublishedBy']['PersonId'],
-                firstName= json['PublishedBy']['FirstName'],
-                lastName= json['PublishedBy']['LastName'],
+                first_name= json['PublishedBy']['FirstName'],
+                last_name= json['PublishedBy']['LastName'],
                 profile= json['PublishedBy']['ProfileUrl'],
-                profileImage= json['PublishedBy']['ProfileImageUrl'],
-                profileImageSmall= json['PublishedBy']['ProfileImageUrlSmall'] 
+                profile_image= json['PublishedBy']['ProfileImageUrl'],
+                profile_image_small= json['PublishedBy']['ProfileImageUrlSmall'] 
             ),
             type= json['Type'],
             url= json['Url'],
             content= json['ContentUrl'],
-            isRead= json['IsRead']
+            is_read= json['IsRead']
           )

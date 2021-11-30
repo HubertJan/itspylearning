@@ -6,13 +6,13 @@ from itspylearning.data_objects.member import Member
 @dataclass
 class HierarchyMember:
     member: Member
-    hierarchyRole: str
-    additionalInfo: str
+    hierarchy_role: str
+    additional_info: str
 
     @staticmethod
     def fromFetchedJSON(json: Any):
         return HierarchyMember(
-            hierarchyRole=json['HierarchyRole'],
-            additionalInfo=json['AdditionalInfo'],
+            hierarchy_role=json['HierarchyRole'],
+            additional_info=json['AdditionalInfo'],
             member=Member.fromFetchedJSON(json)
         )

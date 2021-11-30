@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from itspylearning.data_objects.member import Member
 
@@ -10,17 +11,16 @@ class User:
     calender: str
 
     @staticmethod
-    def fromFetchedJSON(json: str):
-        data: dict[str,  str] = eval(json)
+    def fromFetchedJSON(json: Any):
         return User(
-            language=data['Language'],
-            calender=data['iCalUrl'],
+            language=json['Language'],
+            calender=json['iCalUrl'],
             member=Member(
-                id=data['PersonId'],
-                first_name=data['FirstName'],
-                last_name=data['LastName'],
-                profile_url=data['ProfileUrl'],
-                profile_image=data['ProfileImageUrl'],
-                profile_image_small=data['ProfileImageUrlSmall']
+                id=json['PersonId'],
+                first_name=json['FirstName'],
+                last_name=json['LastName'],
+                profile_url=json['ProfileUrl'],
+                profile_image=json['ProfileImageUrl'],
+                profile_image_small=json['ProfileImageUrlSmall']
             ),
         )
