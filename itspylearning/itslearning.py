@@ -1,3 +1,4 @@
+from typing import Optional
 import aiohttp
 import json
 
@@ -6,7 +7,7 @@ from aiohttp.client import ClientSession
 from itspylearning.consts import ITSLEARNING_URL
 from itspylearning.organisation import Organisation
 
-_clientSession: ClientSession| None = None
+_clientSession: Optional[ClientSession] = None
 
 def _getClient() -> aiohttp.ClientSession:
     global _clientSession

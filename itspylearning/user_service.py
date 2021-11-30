@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, Callable, List, Union, TYPE_CHECKING
+from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
 
 import aiohttp
 import json
@@ -40,7 +40,7 @@ class UserService:
         self.ignore_token_timeout = False
         self.username = username
         self.password = password
-        self._session: None | ClientSession = None
+        self._session: Optional[ClientSession] = None
 
     async def fetch_user(self):
         data = await self._fetch("/restapi/personal/courses/v1/")
@@ -139,7 +139,7 @@ class UserService:
     # This is a workaround, if you have only access to a list of all members in your hierarchy
     # and you want to get a course member list
 
-    async def fetch_course_member_list_by_hierarchy_list(self, hierarchyId: int | None = None,
+    async def fetch_course_member_list_by_hierarchy_list(self, hierarchyId: Optional[int] = None,
                                                          shouldBeAddToList: Callable[[Member | HierarchyMember], bool] = lambda _: True) -> dict[str, List[HierarchyMember | Member]]:
         if(hierarchyId is None):
             hierarchyId = (await self.fetch_hierarchy()).id

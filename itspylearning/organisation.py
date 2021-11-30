@@ -24,7 +24,7 @@ class Organisation:
         self.name: Final = data['Title']
         self.short_name: Final = data['ShortName']
         self.url: Final = data['BaseUrl']
-        self._client = None
+        self._session = None
 
     async def login(self, username, password) -> UserService:
         login_data = await self.re_login(username, password)
@@ -59,17 +59,17 @@ class Organisation:
 
     @property
     def session(self):
-        if(self._client == None):
-            self._client = aiohttp.ClientSession(base_url=self.url, headers={
+        if(self._session == None):
+            self._session = aiohttp.ClientSession(base_url=self.url, headers={
                                                  "User-Agent": USER_AGENT,
                                                  "Content-Type": "application/x-www-form-urlencoded"},
                                                  cookies={
                                                      "login": f"CustomerId={self.id}"},
                                                  )
-        return self._client
+        return self._session
 
     async def close_session(self):
         if self.session == None:
             return
         await self.session.close()
-        self._client = None
+        self._session = None

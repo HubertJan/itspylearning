@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 
 from itspylearning.data_objects.content import Content
@@ -15,7 +15,7 @@ class News:
     author: Member
     type: str
     url: str
-    content: Content | None
+    content: Optional[Content]
 
     @staticmethod
     def fromFetchedJSON(json: Any):
@@ -25,16 +25,16 @@ class News:
             text=json['Text'],
             date=json['PublishedDate'],
             author=Member(
-                id=str(json['PublishedBy']['PersonId']),
-                firstName=str(json['PublishedBy']['FirstName']),
-                lastName=str(json['PublishedBy']['LastName']),
-                profile=str(json['PublishedBy']['ProfileUrl']),
-                profileImage=str(json['PublishedBy']['ProfileImageUrl']),
-                profileImageSmall=""
+                id=json['PublishedBy']['PersonId'],
+                first_name=json['PublishedBy']['FirstName'],
+                last_name=json['PublishedBy']['LastName'],
+                profile_url=json['PublishedBy']['ProfileUrl'],
+                profile_image=json['PublishedBy']['ProfileImageUrl'],
+                profile_image_small=json['PublishedBy']['ProfileImageUrlSmall'],
             ),
             type=json['ElementType'],
             url=json['Url'],
-            content= Content(
+            content=Content(
                 id=json["LightBulletin"]["LightBulletinId"],
                 text=json["LightBulletin"]["Text"],
                 url=json['ContentUrl']
