@@ -113,9 +113,9 @@ class UserService:
 
         return member
 
-    async def sort_members_by_shared_courses(self, members: List[HierarchyMember] | List[Member | HierarchyMember],
-                                             shouldBeAddToList: Callable[[Member | HierarchyMember], bool] = lambda _: True) -> dict[str, List[Member | HierarchyMember]]:
-        courseMembers: dict[str, List[Member | HierarchyMember]] = {}
+    async def sort_members_by_shared_courses(self, members:Union[ List[HierarchyMember] , List[Union [Member , HierarchyMember]] ],
+                                             shouldBeAddToList: Callable[[Union [Member , HierarchyMember]], bool] = lambda _: True) -> "dict[str, List[Union [Member , HierarchyMember]]]":
+        courseMembers: dict[str, List[Union [Member , HierarchyMember]]] = {}
 
         for member in members:
             if isinstance(member, HierarchyMember):
@@ -140,7 +140,7 @@ class UserService:
     # and you want to get a course member list
 
     async def fetch_course_member_list_by_hierarchy_list(self, hierarchyId: Optional[int] = None,
-                                                         shouldBeAddToList: Callable[[Member | HierarchyMember], bool] = lambda _: True) -> dict[str, List[HierarchyMember | Member]]:
+                                                         shouldBeAddToList: Callable[[Union[Member, HierarchyMember]], bool] = lambda _: True) -> "dict[str, List[Union[HierarchyMember , Member]]]":
         if(hierarchyId is None):
             hierarchyId = (await self.fetch_hierarchy()).id
         members = await self.fetch_all_hierarchy_members_of_hierarchy(hierarchyId)
@@ -148,7 +148,7 @@ class UserService:
         return courseMemberList
 
     async def fetch_shared_course_names(self, personId):
-        data = await self._fetch(f"/restapi/personal/person/relations/{personId}/v1")
+        data = await self._fetch(f"{ITSLEARNING_URL}/restapi/personal/person/relations/{personId}/v1")
         if data == []:
             return []
 
@@ -160,7 +160,7 @@ class UserService:
             if not self.is_authenticated:
                 raise Exception('Must be authenticated.')
 
-        fullUrl = f"{url}?access_token={self.access_token}"
+        fullUrl = f"{ITSLEARNING_URL}/{url}?access_token={self.access_token}"
         for key in queryParameters.keys():
             fullUrl = f"{fullUrl}&{key}={queryParameters[key]}"
         fullUrl = f"{fullUrl}#"
@@ -187,7 +187,7 @@ class UserService:
 
     @staticmethod
     def _create_session() -> aiohttp.ClientSession:
-        return aiohttp.ClientSession(base_url=ITSLEARNING_URL,  headers={
+        return aiohttp.ClientSession(  headers={
             "User-Agent": USER_AGENT},)
 
     def __del__(self):

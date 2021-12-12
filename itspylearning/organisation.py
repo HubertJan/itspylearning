@@ -37,7 +37,7 @@ class Organisation:
                            )
 
     async def re_login(self, username, password) -> LoginSessionData:
-        response = await self.session.post(f"/restapi/oauth2/token", data={"grant_type": "password", "client_id": CLIENT_ID, "password": password, "username": username})
+        response = await self.session.post(f"{self.url}/restapi/oauth2/token", data={"grant_type": "password", "client_id": CLIENT_ID, "password": password, "username": username})
         if response.status != 200:
             raise Exception('Request failure.')
         raw_data = await response.text()
@@ -60,7 +60,7 @@ class Organisation:
     @property
     def session(self):
         if(self._session == None):
-            self._session = aiohttp.ClientSession(base_url=self.url, headers={
+            self._session = aiohttp.ClientSession( headers={
                                                  "User-Agent": USER_AGENT,
                                                  "Content-Type": "application/x-www-form-urlencoded"},
                                                  cookies={
