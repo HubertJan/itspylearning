@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 import aiohttp
 import json
 
@@ -15,7 +15,7 @@ def _getClient() -> aiohttp.ClientSession:
         _clientSession = aiohttp.ClientSession()
     return  _clientSession
 
-async def search_organisations(query) -> "list[dict]":
+async def search_organisations(query) -> List[dict]:
     response = await _getClient().get(f"{ITSLEARNING_URL}/restapi/sites/all/organisations/search/v1/?searchText={query}")
     rawData = await response.text()
     data = json.loads(rawData)

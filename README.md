@@ -16,14 +16,14 @@ It can fetch organisations, log into user accounts and fetch information from th
 from itspylearning import *
 import asyncio
 
-async def loginIntoItsLearning() -> UserService:
+async def login_into_itsLearning() -> UserService:
     orgs_data = await Itslearning.search_organisations("Organisation Name")
     org = await Itslearning.fetch_organisation(orgs_data[0]["id"])
     return await org.login("Username", "Password")
 
 
 async def setup():
-    userService = await loginIntoItsLearning()
+    userService = await login_into_itsLearning()
     newsList = await userService.fetch_news()
 
     print(newsList[0])
