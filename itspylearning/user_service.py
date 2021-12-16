@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING, Dict
+from typing import Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
 
 import aiohttp
 import json
